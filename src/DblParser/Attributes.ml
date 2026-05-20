@@ -35,6 +35,7 @@ type attr_conf = {
 let rec make_vis_pattern (pt : Lang.Surface.pattern) =
   map_node begin function
   | PWildcard -> PWildcard
+  | PLit l -> PLit l
   | PId (_, ident) -> PId (true, ident)
   | PAnnot (pt, scheme) -> PAnnot (make_vis_pattern pt, scheme)
   | PCtor (pth, xs, ys) -> 

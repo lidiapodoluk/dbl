@@ -307,10 +307,10 @@ let rec tr_pattern (p : Raw.expr) =
   | EWildcard   -> make PWildcard
   | EUnit | ECtor _ | ESelect _ ->
     make (PCtor(tr_ctor_pattern p, [], []))
-  | ENum _      -> Error.fatal (Error.desugar_error p.pos)
-  | ENum64 _      -> Error.fatal (Error.desugar_error p.pos)
-  | EStr _      -> Error.fatal (Error.desugar_error p.pos)
-  | EChr _      -> Error.fatal (Error.desugar_error p.pos)
+  | ENum      n -> make (PLit (ENum n))
+  | ENum64    n -> make (PLit (ENum64 n))
+  | EStr      s -> make (PLit (EStr s))
+  | EChr      c -> make (PLit (EChr c))
   | EInterp _   -> Error.fatal (Error.desugar_error p.pos)
   | EParen    p -> make (tr_pattern p).data
   | EVar      x -> make (PId(false, IdVar x))

@@ -15,7 +15,7 @@ let return x cont = cont x
 let rec tr_expr env (e : S.expr) =
   match e with
   | EUnitPrf | EBoolPrf | EOptionPrf | ENum _ | ENum64 _ | EStr _ | EChr _ 
-  | EVar _ | EExtern _ | ERepl _ | EReplExpr _ ->
+  | ELit _ | EVar _ | EExtern _ | ERepl _ | EReplExpr _ ->
     let^ v = tr_expr_v env e in
     T.EValue v
 
@@ -91,7 +91,7 @@ and tr_let_expr ~pure x env (e : S.expr) cont =
     T.ELetPure(Relevant, x, tr_expr env e, cont ())
 
   | EUnitPrf | EBoolPrf | EOptionPrf | ENum _ | ENum64 _ | EStr _ | EChr _ 
-  | EVar _ | EFn _ | ETFun _ | ECAbs _ | EExtern _ ->
+  | ELit _ | EVar _ | EFn _ | ETFun _ | ECAbs _ | EExtern _ ->
     T.ELetPure(Relevant, x, tr_expr env e, cont ())
 
   | EApp _ | ETApp _ | ECApp _ | ELet _ | ELetPure _ | ELetRec _ | ERecCtx _
@@ -117,7 +117,7 @@ and tr_expr_as_var env e =
 and tr_expr_p env (e : S.expr) =
   match e with
   | EUnitPrf | EBoolPrf | EOptionPrf | ENum _ | ENum64 _ | EStr _ | EChr _
-  | EVar _ | EFn _ | ETFun _ | ECAbs _ | EExtern _ ->
+  | ELit _ | EVar _ | EFn _ | ETFun _ | ECAbs _ | EExtern _ ->
     return (tr_expr env e)
 
   | ETApp(e, tp) ->
@@ -169,6 +169,7 @@ and tr_expr_v env (e : S.expr) =
   | ENum64 n -> return (T.VLit (LNum64 n))
   | EStr   s -> return (T.VLit (LStr s))
   | EChr   c -> return (T.VLit (LNum (Char.code c)))
+  | ELit   l -> tr_lit l
   | EVar   x -> return (T.VVar x)
 
   | ELet(x, e1, e2) ->
@@ -187,6 +188,14 @@ and tr_expr_v env (e : S.expr) =
   | EReplExpr _ ->
     let* x = tr_expr_as_var env e in
     return (T.VVar x)
+
+(** Translate a literal *)
+and tr_lit l =
+  match l with 
+  | ENum   n -> return (T.VLit (LNum n))
+  | ENum64 n -> return (T.VLit (LNum64 n))
+  | EStr   s -> return (T.VLit (LStr s))
+  | EChr   c -> return (T.VLit (LNum (Char.code c)))
 
 (** Translate a list of expressions as list of values in expression building
   monad. *)

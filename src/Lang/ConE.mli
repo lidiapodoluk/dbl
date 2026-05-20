@@ -1,4 +1,5 @@
 (* This file is part of DBL, released under MIT license.
+
  * See LICENSE for details.
  *)
 
@@ -139,6 +140,9 @@ type expr =
   | EChr of char
     (** Character literal *)
 
+  | ELit of literal
+    (** Literal for pattern *)
+
   | EVar of var
     (** Variable *)
 
@@ -209,7 +213,7 @@ type expr =
       expression. *)
 
 (** Recursive definition *)
-and rec_def =
+ and rec_def =
   { rd_var    : var;
       (** Variable that stores recursive value. *)
 
@@ -238,6 +242,13 @@ and match_clause =
     cl_body  : expr
     (** Body of the clause *)
   }
+
+(** Literals for patterns *)
+and literal =
+  | ENum        of int
+  | ENum64      of int64
+  | EStr        of string
+  | EChr        of char
 
 (** Programs *)
 type program = expr

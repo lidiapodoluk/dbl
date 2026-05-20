@@ -177,6 +177,8 @@ type pattern = pattern_data node
 and pattern_data =
   | PWildcard
     (** Wildcard pattern -- it matches everything *)
+  
+  | PLit of literal
 
   | PId of is_public * ident
     (** Pattern that binds an identifier *)
@@ -186,6 +188,19 @@ and pattern_data =
 
   | PAnnot of pattern * scheme_expr
     (** Scheme annotation *)
+    
+and literal =
+  | ENum of int
+    (** Integer literal *)
+
+  | ENum64 of int64
+    (** 64 bit integer literal *)
+
+  | EStr of string
+    (** String literal *)
+
+  | EChr of char
+    (** Char literal *)
 
   | POr of pattern * pattern
     (** Or-pattern: matches if either sub-pattern matches *)

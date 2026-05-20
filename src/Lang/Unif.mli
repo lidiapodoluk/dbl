@@ -286,6 +286,9 @@ and pattern_data =
   | PAs of pattern * var
     (** Pattern that binds a variable and continues with a subpattern *)
 
+  | PLit of literal 
+    (** Literal pattern *)
+
   | PCtor of
     string * int * proof_expr * tvar list * pattern list * pattern list
     (** ADT constructor pattern. It stores a name, constructor index,
@@ -297,6 +300,12 @@ and pattern_data =
 
   | POr of pattern * pattern
     (** Or-pattern: matches if either sub-pattern matches *)
+
+and literal =   
+  | PNum of int
+  | PNum64 of int64
+  | PStr of string
+  | PChr of char
 
 (** Polymorphic expression *)
 type poly_expr = poly_expr_data node
