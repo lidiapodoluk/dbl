@@ -545,7 +545,7 @@ let update_rec_body ~pos fds (body : T.poly_fun) =
     match e.data with
 
     | ELit _ | EExtern _ -> e
-    
+
     | EFn(x, sch, body, Impure) ->
       make (T.EFn(x, sch, make (T.ERecCtx body), Impure))
 

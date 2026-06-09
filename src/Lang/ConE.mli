@@ -116,6 +116,20 @@ type data_def =
         (** Effect of the delimiter *)
     }
 
+(** Literals *)
+and literal =
+  | ENum of int
+    (** Integer literal *)
+
+  | ENum64 of int64
+    (** 64 bit integer literal *)
+
+  | EStr of string
+    (** String literal *)
+
+  | EChr of char
+    (** Character literal *)
+
 (** Expressions *)
 type expr =
   | EUnitPrf
@@ -229,13 +243,6 @@ and match_clause =
     cl_body  : expr
     (** Body of the clause *)
   }
-
-(** Literals *)
-and literal =
-  | ENum        of int
-  | ENum64      of int64
-  | EStr        of string
-  | EChr        of char
 
 (** Programs *)
 type program = expr

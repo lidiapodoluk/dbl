@@ -23,6 +23,12 @@ type data_def =
       delim_eff : effct
     }
 
+type literal =
+  | ENum      of int
+  | ENum64    of int64
+  | EStr      of string
+  | EChr      of char
+
 type expr =
   | EUnitPrf
   | EBoolPrf
@@ -47,12 +53,6 @@ type expr =
   | EExtern   of string * typ
   | ERepl     of (unit -> expr) * typ * ceffect
   | EReplExpr of expr * string * expr
-
-and literal =
-  | ENum      of int
-  | ENum64    of int64
-  | EStr      of string
-  | EChr      of char
 
 and rec_def =
   { rd_var    : var;
