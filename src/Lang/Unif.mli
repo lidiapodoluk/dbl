@@ -277,6 +277,20 @@ type proof_expr =
     (** Variable generated at the ADT definition, applied to the parameters
       of the ADT. *)
 
+(** Literal *)
+type literal =
+  | ENum of int
+    (** Integer literal *)
+
+  | ENum64 of int64
+    (** 64 bit integer literal *)
+
+  | EStr of string
+    (** String literal *)
+
+  | EChr of char
+    (** Character literal *)
+
 (** Pattern *)
 type pattern = pattern_data node
 and pattern_data =
@@ -300,12 +314,6 @@ and pattern_data =
 
   | POr of pattern * pattern
     (** Or-pattern: matches if either sub-pattern matches *)
-
-and literal =
-  | PNum of int
-  | PNum64 of int64
-  | PStr of string
-  | PChr of char
 
 (** Polymorphic expression *)
 type poly_expr = poly_expr_data node
@@ -344,17 +352,8 @@ and expr_data =
   | EInst of poly_expr * type_expr list * poly_fun list
     (** Instantiation of polymorphic expression *)
 
-  | ENum of int
-    (** Integer literal *)
-
-  | ENum64 of int64
-    (** 64 bit integer literal *)
-
-  | EStr of string
-    (** String literal *)
-
-  | EChr of char
-    (** Character literal *)
+  | ELit of literal
+    (** Literal *)
 
   | EFn of var * scheme_expr * expr * effct
     (** Effect-annotated lambda-abstraction. *)

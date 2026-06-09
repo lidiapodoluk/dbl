@@ -219,10 +219,10 @@ let rec check_scheme env (pat : S.pattern) sch =
           ~on_error:(Error.pattern_type_mismatch ~pp lit_tp tp);
     end; 
     begin match l with
-    | ENum n   -> (PartialEnv.empty, make (T.PLit (T.PNum n)), T.Pure)
-    | ENum64 n -> (PartialEnv.empty, make (T.PLit (T.PNum64 n)), T.Pure)
-    | EStr s   -> (PartialEnv.empty, make (T.PLit (T.PStr s)), T.Pure)
-    | EChr c   -> (PartialEnv.empty, make (T.PLit (T.PChr c)), T.Pure)
+    | ENum n   -> (PartialEnv.empty, make (T.PLit(T.ENum n)), T.Pure)
+    | ENum64 n -> (PartialEnv.empty, make (T.PLit(T.ENum64 n)), T.Pure)
+    | EStr s   -> (PartialEnv.empty, make (T.PLit(T.EStr s)), T.Pure)
+    | EChr c   -> (PartialEnv.empty, make (T.PLit(T.EChr c)), T.Pure)
     end
 
   | PId(public, id) ->

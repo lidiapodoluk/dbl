@@ -27,7 +27,7 @@ let rec tr_expr (e : S.expr) =
   match e with
   | EUnitPrf | EBoolPrf | EOptionPrf -> assert false
 
-  | ENum _ | ENum64 _ | EStr _ | EChr _ | ELit _ | EVar _ | EExtern _ ->
+  | ELit _ | EVar _ | EExtern _ ->
     let^ v = tr_expr_v e in
     T.EValue v
 
@@ -78,11 +78,8 @@ and tr_expr_v (e : S.expr) =
   match e with
   | EUnitPrf | EBoolPrf | EOptionPrf -> assert false
 
-  | ENum   n        -> return (T.VLit (LNum n))
-  | ENum64 n        -> return (T.VLit (LNum64 n))
-  | EStr   s        -> return (T.VLit (LStr s))
-  | EChr   c        -> return (T.VLit (LNum (Char.code c)))
   | ELit   l        -> tr_expr_lit l
+
   | EVar   x        -> return (T.VVar x)
 
   | EExtern(name, _) -> return (T.VExtern name)

@@ -127,18 +127,6 @@ type expr =
   | EOptionPrf
     (** ADT-shape proof for option type *)
 
-  | ENum of int
-    (** Integer literal *)
-
-  | ENum64 of int64
-    (** 64 bit integer literal *)
-
-  | EStr of string
-    (** String literal *)
-
-  | EChr of char
-    (** Character literal *)
-
   | ELit of literal
     (** Literal *)
 
@@ -242,7 +230,7 @@ and match_clause =
     (** Body of the clause *)
   }
 
-(** Literals for patterns *)
+(** Literals *)
 and literal =
   | ENum        of int
   | ENum64      of int64

@@ -178,7 +178,7 @@ let rec column_class (cls : iclause list) =
               if List.exists (fun x -> x = l) acc
               then collect acc cls
               else collect (l :: acc) cls
-          | _ -> assert false)
+          | (PCtor _ | PAs (_, _) | POr(_, _)) :: _ -> assert false)
       in
       CC_Lit (collect [lit] cls)
     | PCtor cp :: _ -> CC_ADT(cp.proof, cp.ctors)
@@ -199,20 +199,6 @@ module type MatchContext = sig
   (** Result effect of the whole matching expression *)
   val res_eff : T.ceffect
 end
-
-let make_eq_type (lit: T.literal) = 
-  let tp_lit = 
-    match lit with 
-    | ENum n   -> T.Type.t_var T.BuiltinType.tv_int
-    | ENum64 n -> T.Type.t_var T.BuiltinType.tv_int64
-    | EStr s   -> T.Type.t_var T.BuiltinType.tv_string
-    | EChr c   -> T.Type.t_var T.BuiltinType.tv_char
-  in 
-  let tp_bool = T.Type.t_var T.BuiltinType.tv_bool in
-  let sch_lit = T.Scheme.of_type tp_lit in
-  let inner = T.Type.t_arrow sch_lit tp_bool T.Pure
-  in
-  T.Type.t_arrow sch_lit inner T.Pure 
 
 module Make(Ctx : MatchContext) = struct
   (** Main function of the translation. It solves a bit more general problem:
@@ -242,13 +228,31 @@ module Make(Ctx : MatchContext) = struct
         T.EMatch(proof, T.EVar x, match_cls, Ctx.res_tp, Ctx.res_eff)
       end
 
+  and make_eq_type (lit: T.literal) = 
+    let tp_lit = 
+      match lit with 
+      | ENum n   -> T.Type.t_var T.BuiltinType.tv_int
+      | ENum64 n -> T.Type.t_var T.BuiltinType.tv_int64
+      | EStr s   -> T.Type.t_var T.BuiltinType.tv_string
+      | EChr c   -> T.Type.t_var T.BuiltinType.tv_char
+    in 
+    let tp_bool = T.Type.t_var T.BuiltinType.tv_bool in
+    let sch_lit = T.Scheme.of_type tp_lit in
+    let inner = T.Type.t_arrow sch_lit tp_bool T.Pure
+    in
+    T.Type.t_arrow sch_lit inner T.Pure 
+
   and make_eq_expr (x : T.expr) (lit : T.literal) : T.expr =
     let eq_tp = make_eq_type lit in
     match lit with
-    | ENum n   -> T.EApp(T.EApp(T.EExtern("dbl_eqInt", eq_tp), x), T.ENum n)
-    | ENum64 n -> T.EApp(T.EApp(T.EExtern("dbl_eqInt64", eq_tp), x), T.ENum64 n)
-    | EStr s   -> T.EApp(T.EApp(T.EExtern("dbl_eqStr", eq_tp), x), T.EStr s)
-    | EChr c   -> T.EApp(T.EApp(T.EExtern("dbl_eqInt", eq_tp), x), T.EChr c)
+    | ENum n ->
+      T.EApp(T.EApp(T.EExtern("dbl_eqInt", eq_tp), x), T.ELit(ENum n))
+    | ENum64 n ->
+      T.EApp(T.EApp(T.EExtern("dbl_eqInt64", eq_tp), x), T.ELit(ENum64 n))
+    | EStr s ->
+      T.EApp(T.EApp(T.EExtern("dbl_eqStr", eq_tp), x), T.ELit(EStr s))
+    | EChr c ->
+      T.EApp(T.EApp(T.EExtern("dbl_eqInt", eq_tp), x), T.ELit(EChr c))
 
   and make_eq_match x lit then_e else_e =
     let cond = make_eq_expr(T.EVar x) lit in
