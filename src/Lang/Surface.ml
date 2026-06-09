@@ -178,6 +178,9 @@ and pattern_data =
   | PWildcard
     (** Wildcard pattern -- it matches everything *)
 
+  | PLit of literal
+    (** Literal pattern *)
+
   | PId of is_public * ident
     (** Pattern that binds an identifier *)
 
@@ -189,6 +192,19 @@ and pattern_data =
 
   | POr of pattern * pattern
     (** Or-pattern: matches if either sub-pattern matches *)
+
+and literal =
+  | ENum of int
+    (** Integer literal *)
+
+  | ENum64 of int64
+    (** 64 bit integer literal *)
+
+  | EStr of string
+    (** String literal *)
+
+  | EChr of char
+    (** Char literal *)
 
 (** Pattern for a named parameter *)
 and named_pattern = named_pattern_data node

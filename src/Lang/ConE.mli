@@ -139,6 +139,9 @@ type expr =
   | EChr of char
     (** Character literal *)
 
+  | ELit of literal
+    (** Literal *)
+
   | EVar of var
     (** Variable *)
 
@@ -238,6 +241,13 @@ and match_clause =
     cl_body  : expr
     (** Body of the clause *)
   }
+
+(** Literals for patterns *)
+and literal =
+  | ENum        of int
+  | ENum64      of int64
+  | EStr        of string
+  | EChr        of char
 
 (** Programs *)
 type program = expr

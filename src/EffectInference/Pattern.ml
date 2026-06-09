@@ -76,6 +76,7 @@ end
 type t =
   | PWildcard
   | PAs       of t * T.var
+  | PLit      of T.literal 
   | PCtor     of
       { name  : string;
         idx   : int;
@@ -105,7 +106,7 @@ let open_tvars env targs tvars =
 
 let rec check_type env (pat : S.pattern) tp =
   match pat.data with
-  | PWildcard | PAnnot _ | POr _ ->
+  | PWildcard | PLit _ | PAnnot _ | POr _ ->
     check_scheme env pat (T.Scheme.of_type tp)
 
   | PAs(pat, x) ->
@@ -185,6 +186,13 @@ and check_patterns env penv sub pats schs =
 and check_scheme env (pat : S.pattern) sch =
   match pat.data with
   | PWildcard -> (PWildcard, PEnv.empty)
+
+  | PLit l -> 
+    (match l with 
+    | PNum n -> (PLit (ENum n), PEnv.empty)
+    | PNum64 n -> (PLit (ENum64 n), PEnv.empty)
+    | PStr s -> (PLit (EStr s), PEnv.empty)
+    | PChr c -> (PLit (EChr c), PEnv.empty))
 
   | PAs(pat, x) ->
     let (pat, penv) = check_scheme env pat sch in

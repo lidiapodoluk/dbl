@@ -81,10 +81,17 @@ type pattern = pattern_data node
 and pattern_data =
   | PWildcard
   | PAs       of pattern * var
+  | PLit      of literal
   | PCtor     of
     string * int * proof_expr * tvar list * pattern list * pattern list
   | PAnnot    of pattern * scheme_expr
   | POr       of pattern * pattern
+
+and literal =
+  | PNum      of int
+  | PNum64    of int64
+  | PStr      of string
+  | PChr      of char
 
 type poly_expr = poly_expr_data node
 and poly_expr_data =

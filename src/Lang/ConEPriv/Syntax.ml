@@ -31,6 +31,7 @@ type expr =
   | ENum64    of int64
   | EStr      of string
   | EChr      of char
+  | ELit      of literal
   | EVar      of var
   | EFn       of var * scheme * expr
   | ETFun     of tvar * expr
@@ -50,6 +51,12 @@ type expr =
   | EExtern   of string * typ
   | ERepl     of (unit -> expr) * typ * ceffect
   | EReplExpr of expr * string * expr
+
+and literal =
+  | ENum      of int
+  | ENum64    of int64
+  | EStr      of string
+  | EChr      of char
 
 and rec_def =
   { rd_var    : var;
